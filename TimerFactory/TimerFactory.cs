@@ -60,13 +60,125 @@ public class TimerFactory : ITimerFactory, IDisposable
                 ActionFailure?.Invoke(name, ex);
             }
         };
-
-        // Create the timer. This timer will first trigger after the interval 
-        // and then continue to trigger every interval afterwards.
+        // Create the Timer. It starts after the 'interval' and continues running at that interval.
         var timer = new System.Threading.Timer(callback, null, interval, interval);
-
         // Save the timer in the dictionary.
         Timers.Add(name, timer);
+    }
+
+    /// <summary>
+    /// Adds a timer with the specified name that will run the given function at the defined interval.
+    /// The return value of the function is ignored.
+    /// </summary>
+    /// <typeparam name="T">The type of the return value of the function.</typeparam>
+    /// <param name="name">Unique name to identify the timer.</param>
+    /// <param name="func">The function to execute on each tick.</param>
+    /// <param name="interval">The recurring interval for the function.</param>
+    /// <exception cref="ArgumentException">Thrown if a timer with the same name already exists.</exception>
+    public void AddTimer<T>(string name, Func<T> func, TimeSpan interval)
+    {
+        if (Timers.ContainsKey(name))
+            throw new ArgumentException($"A timer with the name '{name}' already exists.");
+
+        // Create a TimerCallback that wraps the provided function.
+        System.Threading.TimerCallback callback = state =>
+        {
+            try
+            {
+                // Execute the function and ignore its returned value.
+                _ = func();
+
+                // This event is trivial, but it could be used for stat tracking or logging.
+                ActionSuccess?.Invoke(name, interval);
+            }
+            catch (Exception ex)
+            {
+                ActionFailure?.Invoke(name, ex);
+            }
+        };
+        // Create the Timer. It starts after the 'interval' and continues running at that interval.
+        var timer = new System.Threading.Timer(callback, null, interval, interval);
+        // Save the timer in the dictionary.
+        Timers.Add(name, timer);
+    }
+
+    /// <summary>
+    /// Adds a timer with the specified name that will run the given function at the defined interval,
+    /// and passes the result of the function to a provided result handler.
+    /// </summary>
+    /// <typeparam name="T">The type of the value returned by the function.</typeparam>
+    /// <param name="name">Unique name to identify the timer.</param>
+    /// <param name="func">The function to execute on each tick.</param>
+    /// <param name="interval">The recurring interval for executing the function.</param>
+    /// <param name="resultHandler">A callback that receives the function's result each time it is executed.</param>
+    /// <exception cref="ArgumentException">Thrown if a timer with the same name already exists.</exception>
+    public void AddTimer<T>(string name, Func<T> func, TimeSpan interval, Action<T> resultHandler)
+    {
+        if (Timers.ContainsKey(name))
+            throw new ArgumentException($"A timer with the name '{name}' already exists.");
+
+        System.Threading.TimerCallback callback = state =>
+        {
+            try
+            {
+                // Execute the function and then invoke the result handler with the computed value.
+                T result = func();
+                resultHandler(result);
+
+                // This event is trivial, but it could be used for stat tracking or logging.
+                ActionSuccess?.Invoke(name, interval);
+            }
+            catch (Exception ex)
+            {
+                ActionFailure?.Invoke(name, ex);
+            }
+        };
+        // Create the Timer. It starts after the 'interval' and continues running at that interval.
+        var timer = new System.Threading.Timer(callback, null, interval, interval);
+        // Save the timer in the dictionary.
+        Timers.Add(name, timer);
+    }
+
+    /// <summary>
+    /// Creates a one-shot timer that runs the given function after the specified dueTime,
+    /// and returns a Task&lt;T&gt; that completes with the function's result.
+    /// 
+    /// This Task-based approach is ideal for one-time operations where you want to await the result.
+    /// The timer is set to fire only once.
+    /// </summary>
+    /// <typeparam name="T">The type of the result returned by the function.</typeparam>
+    /// <param name="name">Unique name used to identify the timer (optional for tracking).</param>
+    /// <param name="func">The function to execute when the timer fires.</param>
+    /// <param name="dueTime">The delay after which the timer should fire.</param>
+    /// <returns>A Task&lt;T&gt; that completes with the result of <paramref name="func"/>.</returns>
+    public Task<T> AddOneShotTimer<T>(string name, Func<T> func, TimeSpan dueTime)
+    {
+        var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        System.Threading.Timer? timer = null;
+
+        // Timer is configured to fire only once (period = Timeout.InfiniteTimeSpan).
+        timer = new System.Threading.Timer(state =>
+        {
+            // Dispose the timer immediately to ensure it's only a one-shot.
+            timer.Dispose();
+            try
+            {
+                T result = func();
+                tcs.TrySetResult(result);
+            }
+            catch (Exception ex)
+            {
+                tcs.TrySetException(ex);
+            }
+        }, null, dueTime, System.Threading.Timeout.InfiniteTimeSpan);
+
+        // Optionally, store the timer in our dictionary for management or cancellation.
+        if (!string.IsNullOrEmpty(name))
+        {
+            Timers.Add(name, timer);
+        }
+
+        return tcs.Task;
     }
 
     /// <summary>

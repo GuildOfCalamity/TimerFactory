@@ -62,6 +62,7 @@ public class Program
         Console.WriteLine($"✏️ Press any key to dispose of the factory and close the app.");
         var key = Console.ReadKey().Key;
         _timers.Dispose();
-        Console.WriteLine("📢 Timer factory disposed. Exiting…");
+        Console.WriteLine("🔔 Timer factory disposed. Exiting…");
+        Thread.Sleep(2000);
     }
 }
