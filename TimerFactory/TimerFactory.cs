@@ -16,6 +16,7 @@ public interface ITimerFactory
     System.Threading.Timer? GetTimer(string name);
     IEnumerable<string> GetTimerNames();
     TimeSpan GetTimeSpanUntil(DateTime futureTime);
+    void Dispose();
     #endregion
 }
 
