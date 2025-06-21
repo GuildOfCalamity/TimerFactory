@@ -66,11 +66,11 @@
 
 ```
 
-## 🎛️ SampeApp Usage
+## 🎛️ Running SampeApp
 
-- `C:\> TimerFactory`
+- `C:\> SampleApp`
 
-- `PS> .\TimerFactory`
+- `PS> .\SampleApp`
 
 ## 📷 Screenshot
 
