@@ -44,6 +44,28 @@
 
 `TimeSpan GetTimeSpanUntil(DateTime futureTime);`
 
+
+```csharp
+
+    /** Samples **/
+
+    ITimerFactory? _timers = new TimerFactory();
+    
+    // Create a timer that fires every 1 hour.
+    _timers.AddTimer("1HourTimer", TimeSpan.FromHours(1), () =>
+    {
+        Console.WriteLine($"🔔 1 hour timer executed at {DateTime.Now}");
+    });
+
+    // Using the GetTimeSpanUntil helper method to create a timer 
+    // that fires once per week (starting a week from now).
+    _timers.AddTimer("1WeekTimer", _timers.GetTimeSpanUntil(DateTime.Now.AddDays(1)), () =>
+    {
+        Console.WriteLine($"🔔 1 week timer executed at {DateTime.Now}");
+    });
+
+```
+
 ## 🎛️ SampeApp Usage
 
 - `C:\> TimerFactory`
