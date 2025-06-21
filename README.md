@@ -59,7 +59,7 @@
 
     // Using the GetTimeSpanUntil helper method to create a timer 
     // that fires once per week (starting a week from now).
-    _timers.AddTimer("1WeekTimer", _timers.GetTimeSpanUntil(DateTime.Now.AddDays(1)), () =>
+    _timers.AddTimer("1WeekTimer", _timers.GetTimeSpanUntil(DateTime.Now.AddDays(7)), () =>
     {
         Console.WriteLine($"🔔 1 week timer executed at {DateTime.Now}");
     });
