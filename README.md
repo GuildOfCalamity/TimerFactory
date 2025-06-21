@@ -16,7 +16,35 @@
 - This library can run multiple timers, executing actions at specified intervals.
 - This project includes compilation outputs for both **.NET Framework 4.8** and **.NET Core 6.0**
 
-## 🎛️ Sampe Usage
+## 🎛️ Library Definitions
+
+`event Action<string, TimeSpan>? ActionSuccess;`
+
+`event Action<string, Exception>? ActionFailure;`
+
+`void AddTimer(string name, TimeSpan interval, Action action);`
+
+`void AddTimer<T>(string name, Func<T> func, TimeSpan interval);`
+
+`void AddTimer<T>(string name, Func<T> func, TimeSpan interval, Action<T> resultHandler);`
+
+`Task<T> AddOneShotTimer<T>(string name, Func<T> func, TimeSpan dueTime);`
+
+`void RemoveTimer(string name);`
+
+`void KillAllTimers();`
+
+`bool StopTimer(string name);`
+
+`bool StartTimer(string name, TimeSpan interval);`
+
+`Timer? GetTimer(string name);`
+
+`IEnumerable<string> GetTimerNames();`
+
+`TimeSpan GetTimeSpanUntil(DateTime futureTime);`
+
+## 🎛️ SampeApp Usage
 
 - `C:\> TimerFactory`
 
