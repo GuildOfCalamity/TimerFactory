@@ -8,11 +8,13 @@
 
 | Assembly | Version |
 | ---- | ---- |
-| .NET Core | 8.0.17 |
+| .NET Core | 6.0 |
+| .NET Framework | 4.8 |
 
 ## 📰 Description
 - A library, and sample app, for the **TimerFactory** demonstrating use of task timers.
 - This library can run multiple timers, executing actions at specified intervals.
+- This project includes compilation outputs for both **.NET Framework 4.8** and **.NET Core 6.0**
 
 ## 🎛️ Sampe Usage
 

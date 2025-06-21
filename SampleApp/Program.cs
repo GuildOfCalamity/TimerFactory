@@ -30,8 +30,13 @@ public class Program
         // Create a timer that runs every 5 seconds.
         _timers.AddTimer("5SecTimer", TimeSpan.FromSeconds(5), () =>
         {
+#if NET6_0_OR_GREATER
             if (Random.Shared.NextDouble() <= 0.111)
                 throw new Exception("Randomly generated exception for testing, you can ignore this.");
+#else
+            if (new Random().NextDouble() <= 0.111)
+                throw new Exception("Randomly generated exception for testing, you can ignore this.");
+#endif
             Console.WriteLine($"🔔 5 second timer executed at {DateTime.Now.TimeStampFormat()}");
         });
 
@@ -60,8 +65,9 @@ public class Program
         });
 
         Console.WriteLine($"✏️ Press any key to dispose of the factory and close the app.");
-        var key = Console.ReadKey().Key;
+        var key = Console.ReadKey(true).Key;
         _timers.Dispose();
+
         Console.WriteLine("🔔 Timer factory disposed. Exiting…");
         Thread.Sleep(2000);
     }
