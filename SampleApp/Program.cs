@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace SampleApp;
 
 public class Program
 {
-    static TimerFactory.TimerFactory? _timers = null;
+    static TimerFactory.ITimerFactory? _timers = null;
 
     static void Main(string[] args)
     {
@@ -63,6 +64,12 @@ public class Program
         {
             Console.WriteLine($"🔔 1 week timer executed at {DateTime.Now.TimeStampFormat()}");
         });
+
+        Debug.WriteLine($"[Current Timer List]");
+        foreach (var tname in _timers.GetTimerNames())
+        {
+            Debug.WriteLine($"  - {tname}");
+        }
 
         Console.WriteLine($"✏️ Press any key to dispose of the factory and close the app.");
         var key = Console.ReadKey(true).Key;
