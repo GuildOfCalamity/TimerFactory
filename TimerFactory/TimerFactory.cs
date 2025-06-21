@@ -6,6 +6,9 @@ public interface ITimerFactory
     event Action<string, TimeSpan>? ActionSuccess;
     event Action<string, Exception>? ActionFailure;
     void AddTimer(string name, TimeSpan interval, Action action);
+    void AddTimer<T>(string name, Func<T> func, TimeSpan interval);
+    void AddTimer<T>(string name, Func<T> func, TimeSpan interval, Action<T> resultHandler);
+    Task<T> AddOneShotTimer<T>(string name, Func<T> func, TimeSpan dueTime);
     void RemoveTimer(string name);
     void KillAllTimers();
     bool StopTimer(string name);
