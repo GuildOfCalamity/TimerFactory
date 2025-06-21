@@ -66,7 +66,7 @@
 
 ```
 
-## 🎛️ Running SampeApp
+## 🎛️ Running SampleApp
 
 - `C:\> SampleApp`
 
