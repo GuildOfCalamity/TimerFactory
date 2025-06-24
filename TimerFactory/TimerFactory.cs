@@ -1,4 +1,4 @@
-﻿namespace TimerFactory;
+﻿namespace Guildsoft;
 
 public interface ITimerFactory
 {

@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
-using System.Xml.Linq;
+using Guildsoft;
 
 namespace SampleApp;
 
 public class Program
 {
-    static TimerFactory.ITimerFactory? _timers = null;
+    static ITimerFactory? _timers = null;
 
     static void Main(string[] args)
     {
@@ -13,7 +13,7 @@ public class Program
         
         Console.WriteLine("🔔 Creating timer factory objects…");
         
-        _timers = new TimerFactory.TimerFactory();
+        _timers = new TimerFactory();
 
         #region [Event Handlers]
         _timers.ActionFailure += (name, ex) =>
@@ -76,6 +76,6 @@ public class Program
         _timers.Dispose();
 
         Console.WriteLine("🔔 Timer factory disposed. Exiting…");
-        Thread.Sleep(2000);
+        Thread.Sleep(1500);
     }
 }
